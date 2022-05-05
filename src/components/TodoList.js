@@ -1,16 +1,25 @@
 import React from 'react';
+import "./TodoList.css";
 import TodoItem from './TodoItem';
 import Todo from './Todo';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { useSelector, useDispatch } from 'react-redux';
-import { completeTodo } from '../redux/action';
+import { completeTodo, addTodo, removeTodo ,updateTodo} from '../redux/action';
 const TodoList = () => {
     const state = useSelector((state) => ({ ...state.todos }));
     let dispatch = useDispatch();
+
+    const create = (newTodo) =>{
+        dispatch(addTodo(newTodo));
+    };
+
+    const update =(id, updatedTask)=> {
+        dispatch(updateTodo({id, updatedTask}));
+    };
     return (
         <div className='TodoList'>
             <h1>Todo Application</h1>
-            <TodoItem />
+            <TodoItem createTodo={create} />
             <ul>
                 <TransitionGroup className="todo-list">
                     {state.todos &&
@@ -23,6 +32,8 @@ const TodoList = () => {
                                         task={todo.task}
                                         completed={todo.completed}
                                         toggleTodo={() => dispatch(completeTodo(todo))}
+                                        removeTodo={() => dispatch(removeTodo(todo))}
+                                        updateTodo={update}
                                     />
                                 </CSSTransition>
                             );
